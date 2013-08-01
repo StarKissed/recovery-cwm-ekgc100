@@ -1,0 +1,2 @@
+./mkbootfs recovery.img-ramdisk | gzip > newramdisk.cpio.gz
+./mkbootimg --cmdline 'no_console_suspend=1 console=null' --kernel zImage --ramdisk newramdisk.cpio.gz -o recovery.img --base 0x05200000

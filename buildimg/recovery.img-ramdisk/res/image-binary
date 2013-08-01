@@ -1,0 +1,18 @@
+#!/sbin/sh
+
+rm -rf /tmp/image-edify /tmp/image
+mkdir -p /tmp/image
+cd /tmp/image
+touch nandroid.md5
+unzip $3 boot.*
+unzip -p $3 image-edify > /tmp/image-edify
+edify /tmp/image-edify
+if [ "0" != "$?" ]
+then
+  exit $?
+fi
+
+# system is mounted and formatted
+cd /
+unzip -p $3 'system.*' | tar x
+exit $?
