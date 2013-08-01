@@ -80,7 +80,7 @@ if [ -e arch/arm/boot/zImage ]; then
     KERNELFILE=recovery.$PUNCHCARD.tar
 
     cp -r  output/recovery.img $KERNELREPO/gooserver/$IMAGEFILE
-    scp -P 2222 $KERNELREPO/gooserver/$IMAGEFILE $GOOSERVER/galaxycam
+    scp -P 2222 $KERNELREPO/gooserver/$IMAGEFILE $GOOSERVER/galaxycam/recovery
 
     if cat /etc/issue | grep Ubuntu; then
         tar -H ustar -c output/recovery.img > output/recovery.tar
@@ -88,7 +88,7 @@ if [ -e arch/arm/boot/zImage ]; then
         gnutar -H ustar -c output/recovery.img > output/recovery.tar
     fi
     cp -r output/recovery.tar $KERNELREPO/camera/recovery.tar
-    scp -P 2222 $KERNELREPO/gooserver/$KERNELFILE $GOOSERVER/galaxycam
+    scp -P 2222 $KERNELREPO/gooserver/$KERNELFILE $GOOSERVER/galaxycam/recovery
     rm -R $KERNELREPO/gooserver/$KERNELFILE
     cp -r output/recovery.tar output/recovery.tar.md5
     if cat /etc/issue | grep Ubuntu; then
@@ -99,7 +99,7 @@ if [ -e arch/arm/boot/zImage ]; then
     gzip output/recovery.tar.md5 -c -v > output/recovery.tar.md5.gz
     cp -r output/recovery.tar.md5.gz $KERNELREPO/camera/recovery.tar.md5.gz
     cp -r $KERNELREPO/camera/recovery.tar.md5.gz $KERNELREPO/gooserver/$KERNELFILE.md5.gz
-    scp -P 2222 $KERNELREPO/gooserver/$KERNELFILE.md5.gz $GOOSERVER/galaxycam
+    scp -P 2222 $KERNELREPO/gooserver/$KERNELFILE.md5.gz $GOOSERVER/galaxycam/recovery
     rm -R $KERNELREPO/gooserver/$KERNELFILE.md5.gz
 fi
 
