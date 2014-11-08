@@ -7,9 +7,9 @@
 PROPER=`echo $1 | sed 's/\([a-z]\)\([a-zA-Z0-9]*\)/\u\1\2/g'`
 
 HANDLE=TwistedZero
-KERNELSPEC=/Volumes/android/ek-gc100_recovery
-KERNELREPO=/Users/TwistedZero/Public/Dropbox/TwistedServer/Playground/kernels
-#TOOLCHAIN_PREFIX=/Volumes/android/android-toolchain-eabi/bin/arm-eabi-
+KERNELSPEC=/Volumes/android/cwm_ek-gc100_recovery
+KERNELREPO=$DROPBOX_SERVER/TwistedServer/Playground/kernels
+#TOOLCHAIN_PREFIX=/Volumes/android/android-toolchain-eabi-4.6/bin/arm-eabi-
 TOOLCHAIN_PREFIX=/Volumes/android/android-tzb_ics4.0.1/prebuilt/darwin-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
 MODULEOUT=$KERNELSPEC/buildimg/recovery.img-ramdisk
 GOOSERVER=loungekatt@upload.goo.im:public_html
@@ -23,41 +23,41 @@ fi
 if [ -e $KERNELSPEC/buildimg/newramdisk.cpio.gz ]; then
 rm -R $KERNELSPEC/buildimg/newramdisk.cpio.gz
 fi
-if [ -e $KERNELSPEC/buildimg/zImage ]; then
-rm -R $KERNELSPEC/buildimg/zImage
-fi
+#if [ -e $KERNELSPEC/buildimg/zImage ]; then
+#rm -R $KERNELSPEC/buildimg/zImage
+#fi
 
-make clean -j$CPU_JOB_NUM
+#make clean -j$CPU_JOB_NUM
 
-make gc1pq_00_defconfig
-make -j$CPU_JOB_NUM ARCH=arm CROSS_COMPILE=$TOOLCHAIN_PREFIX
+#make gc1pq_00_defconfig
+#make -j$CPU_JOB_NUM ARCH=arm CROSS_COMPILE=$TOOLCHAIN_PREFIX
 
-if [ -e arch/arm/boot/zImage ]; then
+#if [ -e arch/arm/boot/zImage ]; then
 
-    if [ `find . -name "*.ko" | grep -c ko` > 0 ]; then
+#    if [ `find . -name "*.ko" | grep -c ko` > 0 ]; then
 
-        find . -name "*.ko" | xargs ${TOOLCHAIN_PREFIX}strip --strip-unneeded
+#        find . -name "*.ko" | xargs ${TOOLCHAIN_PREFIX}strip --strip-unneeded
 
-        if [ ! -d $MODULEOUT ]; then
-            mkdir $MODULEOUT
-        fi
-        if [ ! -d $MODULEOUT/lib ]; then
-            mkdir $MODULEOUT/lib
-        fi
-        if [ ! -d $MODULEOUT/lib/modules ]; then
-            mkdir $MODULEOUT/lib/modules
-        else
-            rm -r $MODULEOUT/lib/modules
-            mkdir $MODULEOUT/lib/modules
-        fi
+#        if [ ! -d $MODULEOUT ]; then
+#            mkdir $MODULEOUT
+#        fi
+#        if [ ! -d $MODULEOUT/lib ]; then
+#            mkdir $MODULEOUT/lib
+#        fi
+#        if [ ! -d $MODULEOUT/lib/modules ]; then
+#            mkdir $MODULEOUT/lib/modules
+#        else
+#            rm -r $MODULEOUT/lib/modules
+#            mkdir $MODULEOUT/lib/modules
+#        fi
 
-        for j in $(find . -name "*.ko"); do
-            cp -R "${j}" $MODULEOUT/lib/modules
-        done
+#        for j in $(find . -name "*.ko"); do
+#            cp -R "${j}" $MODULEOUT/lib/modules
+#        done
 
-    fi
+#    fi
 
-    cp -R arch/arm/boot/zImage buildimg
+#    cp -R arch/arm/boot/zImage buildimg
 
     cd buildimg
     ./img.sh
@@ -79,28 +79,31 @@ if [ -e arch/arm/boot/zImage ]; then
     IMAGEFILE=recovery.$PUNCHCARD.img
     KERNELFILE=recovery.$PUNCHCARD.tar
 
-    cp -r  output/recovery.img $KERNELREPO/gooserver/$IMAGEFILE
-    scp -P 2222 $KERNELREPO/gooserver/$IMAGEFILE $GOOSERVER/galaxycam/recovery
+    cp -r  output/recovery.img $KERNELREPO/camera/recovery.img
 
     if cat /etc/issue | grep Ubuntu; then
         tar -H ustar -c output/recovery.img > output/recovery.tar
     else
-        gnutar -H ustar -c output/recovery.img > output/recovery.tar
+        tar --format ustar -c output/recovery.img > output/recovery.tar
     fi
     cp -r output/recovery.tar $KERNELREPO/camera/recovery.tar
-    scp -P 2222 $KERNELREPO/gooserver/$KERNELFILE $GOOSERVER/galaxycam/recovery
-    rm -R $KERNELREPO/gooserver/$KERNELFILE
     cp -r output/recovery.tar output/recovery.tar.md5
     if cat /etc/issue | grep Ubuntu; then
-        md5sum -r output/recovery.tar.md5 >> output/recovery.tar.md5
+        md5sum -t output/recovery.tar.md5 >> output/recovery.tar.md5
     else
         md5 -r output/recovery.tar.md5 >> output/recovery.tar.md5
     fi
-    gzip output/recovery.tar.md5 -c -v > output/recovery.tar.md5.gz
-    cp -r output/recovery.tar.md5.gz $KERNELREPO/camera/recovery.tar.md5.gz
-    cp -r $KERNELREPO/camera/recovery.tar.md5.gz $KERNELREPO/gooserver/$KERNELFILE.md5.gz
-    scp -P 2222 $KERNELREPO/gooserver/$KERNELFILE.md5.gz $GOOSERVER/galaxycam/recovery
-    rm -R $KERNELREPO/gooserver/$KERNELFILE.md5.gz
-fi
+    cp -r output/recovery.tar.md5 $KERNELREPO/camera/recovery.tar.md5
+
+    cp -r  $KERNELREPO/camera/recovery.img ~/.goo/$IMAGEFILE
+    scp ~/.goo/$IMAGEFILE $GOOSERVER/galaxycam/recovery
+    rm -R ~/.goo/$IMAGEFILE
+    cp -r $KERNELREPO/camera/recovery.tar ~/.goo/$KERNELFILE
+    scp ~/.goo/$KERNELFILE $GOOSERVER/galaxycam/recovery
+    rm -R ~/.goo/$KERNELFILE
+    cp -r $KERNELREPO/camera/recovery.tar.md5 ~/.goo/$KERNELFILE.md5
+    scp ~/.goo/$KERNELFILE.md5 $GOOSERVER/galaxycam/recovery
+    rm -R ~/.goo/$KERNELFILE.md5
+#fi
 
 cd $KERNELSPEC

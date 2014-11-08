@@ -8,14 +8,17 @@ on init
     export EXTERNAL_STORAGE /sdcard
 
     mkdir /sdcard
-    mkdir /extSdCard
     mkdir /external_sd
+    mkdir /sd-ext
     mkdir /system
     mkdir /data
     mkdir /cache
     mkdir /preload
     mkdir /efs
     mount /tmp /tmp tmpfs
+
+    chown root shell /tmp
+    chmod 0775 /tmp
 
 # ko files for exfat
     insmod /lib/modules/exfat_core.ko
