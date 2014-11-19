@@ -11,7 +11,7 @@ KERNELSPEC=$(pwd)
 KERNELREPO=$DROPBOX_SERVER/TwistedServer/Playground/kernels
 #TOOLCHAIN_PREFIX=/Volumes/android/android-toolchain-eabi-4.6/bin/arm-eabi-
 TOOLCHAIN_PREFIX=/Volumes/android/android-tzb_ics4.0.1/prebuilt/darwin-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
-MODULEOUT=$KERNELSPEC/buildimg/recovery.img-ramdisk
+MODULEOUT=buildimg/recovery.img-ramdisk
 GOOSERVER=loungekatt@upload.goo.im:public_html
 PUNCHCARD=`date "+%m-%d-%Y_%H.%M"`
 
@@ -20,14 +20,14 @@ CORES=`sysctl -a | grep machdep.cpu | grep core_count | awk '{print $2}'`
 THREADS=`sysctl -a | grep machdep.cpu | grep thread_count | awk '{print $2}'`
 CPU_JOB_NUM=$((($CORES * $THREADS) / 2))
 
-if [ -e $KERNELSPEC/buildimg/recovery.img ]; then
-rm -R $KERNELSPEC/buildimg/recovery.img
+if [ -e buildimg/recovery.img ]; then
+rm -R buildimg/recovery.img
 fi
-if [ -e $KERNELSPEC/buildimg/newramdisk.cpio.gz ]; then
-rm -R $KERNELSPEC/buildimg/newramdisk.cpio.gz
+if [ -e buildimg/newramdisk.cpio.gz ]; then
+rm -R buildimg/newramdisk.cpio.gz
 fi
-#if [ -e $KERNELSPEC/buildimg/zImage ]; then
-#rm -R $KERNELSPEC/buildimg/zImage
+#if [ -e buildimg/zImage ]; then
+#rm -R buildimg/zImage
 #fi
 
 #make clean -j$CPU_JOB_NUM
