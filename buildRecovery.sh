@@ -7,7 +7,7 @@
 PROPER=`echo $1 | sed 's/\([a-z]\)\([a-zA-Z0-9]*\)/\u\1\2/g'`
 
 HANDLE=TwistedZero
-KERNELSPEC=/Volumes/android/cwm_ek-gc100_recovery
+KERNELSPEC=$(pwd)
 KERNELREPO=$DROPBOX_SERVER/TwistedServer/Playground/kernels
 #TOOLCHAIN_PREFIX=/Volumes/android/android-toolchain-eabi-4.6/bin/arm-eabi-
 TOOLCHAIN_PREFIX=/Volumes/android/android-tzb_ics4.0.1/prebuilt/darwin-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
@@ -15,7 +15,10 @@ MODULEOUT=$KERNELSPEC/buildimg/recovery.img-ramdisk
 GOOSERVER=loungekatt@upload.goo.im:public_html
 PUNCHCARD=`date "+%m-%d-%Y_%H.%M"`
 
-CPU_JOB_NUM=8
+# CPU_JOB_NUM=`grep processor /proc/cpuinfo|wc -l`
+CORES=`sysctl -a | grep machdep.cpu | grep core_count | awk '{print $2}'`
+THREADS=`sysctl -a | grep machdep.cpu | grep thread_count | awk '{print $2}'`
+CPU_JOB_NUM=$((($CORES * $THREADS) / 2))
 
 if [ -e $KERNELSPEC/buildimg/recovery.img ]; then
 rm -R $KERNELSPEC/buildimg/recovery.img
